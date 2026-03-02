@@ -20,7 +20,7 @@ CREATE TABLE users (
 );
 
 
-### Indexes
+
 
 CREATE INDEX idx_users_phone ON users(phone_number);
 CREATE INDEX idx_users_email ON users(email);
@@ -76,7 +76,7 @@ CREATE TABLE items (
 );
 
 
-## Performance Indexes
+
 
 CREATE INDEX idx_items_status ON items(status);
 CREATE INDEX idx_items_category ON items(category_id);
