@@ -1,0 +1,15 @@
+const itemRepository = require('../repositories/itemRepository');
+class ItemService{
+    async getHomePageRecentItems(){
+        const limit = 8;
+        return await itemRepository.gerRecentItems(limit);
+    }
+    async searchItemsByTitle(searchText){
+        if(!searchText || searchText.trim()=== ''){
+            return [];
+        }
+        const limit = 10;
+        return await itemRepository.searchItemsByTitle(searchText,limit);
+    }
+}
+module.exports = new ItemService();

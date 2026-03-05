@@ -1,8 +1,8 @@
 const express = require('express');
 const pool = require('./db');
-
 const app = express();
 
+const itemRoutes = require('./routes/itemRoutes'); 
 
 app.use(express.json());
 
@@ -23,6 +23,8 @@ app.get('/test-db', async (req, res) => {
     res.status(500).json({ error: 'Database connection failed' });
   }
 });
+
+app.use('/items', itemRoutes);
 
 const PORT = 5000;
 app.listen(PORT, () => {
