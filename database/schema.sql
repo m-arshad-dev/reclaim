@@ -20,7 +20,7 @@ CREATE TABLE users (
 );
 
 
-
+ 
 
 CREATE INDEX idx_users_phone ON users(phone_number);
 CREATE INDEX idx_users_email ON users(email);
