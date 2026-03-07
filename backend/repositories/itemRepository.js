@@ -23,7 +23,16 @@ class ItemRepository {
         [`%${query}%`, limit]
     );
     }
-
+    async getItemsByUser(userId){
+        const result = await db.query(`
+            SELECT 
+            id,title,image_url,status,created_at
+            from items
+            where user_id = $1
+            order by created_at desc`, [userId]
+        );
+        return result.rows;
+    }
 }
 
 module.exports = new ItemRepository();

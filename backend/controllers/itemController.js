@@ -18,6 +18,16 @@ class ItemController{
             res.status(500).json({message : error.message});
         }
     }
+
+    async getMyPosts(req, res){
+        try {
+            const userId = req.params.userId;
+            const items = await itemService.getUserItems(userId);
+            res.status(200).json(items);
+        }catch(error){
+            res.status(500).json({message : error.message});
+        }
+    }
 }
 
 module.exports = new ItemController();

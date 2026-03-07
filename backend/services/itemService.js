@@ -9,7 +9,10 @@ class ItemService{
             return [];
         }
         const limit = 10;
-        return await itemRepository.searchItemsByTitle(searchText,limit);
+        return await itemRepository.searchByTitle(searchText,limit);
+    }
+    async getUserItems(userId){
+        return await itemRepository.getItemsByUser(userId);
     }
 }
 module.exports = new ItemService();
