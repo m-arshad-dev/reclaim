@@ -1,15 +1,50 @@
-const express = require('express');
-const router = express.Router();
-const userService = require('../services/UserService');
+const userService = require("../services/UserService");
 
-router.post('/register', async (req, res) => {
-  try {
-    const user = await userService.register(req.body);
-    res.status(201).json(user);
-  } catch (err) {
-    console.error(err);
-    res.status(400).json({ error: 'Registration failed' });
+class UserController {
+
+  async register(req, res) {
+    try {
+
+      const user = await userService.register(req.body);
+
+      res.status(201).json({
+        success: true,
+        data: user
+      });
+
+    } catch (err) {
+
+      res.status(400).json({
+        success: false,
+        message: err.message
+      });
+
+    }
   }
-});
 
-module.exports = router;
+  async login(req, res) {
+
+    try {
+
+      const { phone, password } = req.body;
+
+      const user = await userService.login(phone, password);
+
+      res.json({
+        success: true,
+        data: user
+      });
+
+    } catch (err) {
+
+      res.status(401).json({
+        success: false,
+        message: err.message
+      });
+
+    }
+  }
+
+}
+
+module.exports = new UserController();

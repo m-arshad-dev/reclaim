@@ -4,6 +4,9 @@ const app = express();
 
 const itemRoutes = require('./routes/itemRoutes'); 
 const claimRoutes = require('./routes/claimRoutes');
+const userRoutes = require('./routes/UserRoutes');
+
+
 app.use(express.json());
 
 app.get('/', (req, res) => {
@@ -24,6 +27,9 @@ app.get('/test-db', async (req, res) => {
   }
 });
 
+
+
+app.use("/api/users", userRoutes);
 app.use('/items', itemRoutes);
 app.use('/claims', claimRoutes);
 const PORT = 5000;
