@@ -3,7 +3,7 @@ const pool = require('./db');
 const app = express();
 
 const itemRoutes = require('./routes/itemRoutes'); 
-
+const claimRoutes = require('./routes/claimRoutes');
 app.use(express.json());
 
 app.get('/', (req, res) => {
@@ -25,7 +25,7 @@ app.get('/test-db', async (req, res) => {
 });
 
 app.use('/items', itemRoutes);
-
+app.use('/claims', claimRoutes);
 const PORT = 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
