@@ -1,4 +1,6 @@
 const express = require('express');
+const helmet = require("helmet");
+const cors = require("cors");
 const pool = require('./db');
 const app = express();
 
@@ -7,6 +9,10 @@ const claimRoutes = require('./routes/claimRoutes');
 const userRoutes = require('./routes/UserRoutes');
 
 
+const authRoutes = require("./routes/authRoutes");
+
+app.use(helmet());
+app.use(cors());
 app.use(express.json());
 
 app.get('/', (req, res) => {
@@ -29,9 +35,16 @@ app.get('/test-db', async (req, res) => {
 
 
 
-app.use("/api/users", userRoutes);
+app.use("/auth", authRoutes);
+app.use("/users", userRoutes);
 app.use('/items', itemRoutes);
 app.use('/claims', claimRoutes);
+
+
+
+
+
+
 const PORT = 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

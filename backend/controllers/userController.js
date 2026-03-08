@@ -45,6 +45,16 @@ class UserController {
     }
   }
 
+  async me(req , res) {
+    try {
+    const user = await userService.getProfile(req.user.id);
+    res.json(user);
+    }catch(err){
+      res.status(400).json({
+        err: err.message
+      })
+    }
+  }
 }
 
 module.exports = new UserController();
