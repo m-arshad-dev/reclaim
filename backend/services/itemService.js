@@ -5,9 +5,6 @@ class ItemService{
         return await itemRepository.gerRecentItems(limit);
     }
     async searchItemsByTitle(searchText){
-        if(!searchText || searchText.trim()=== ''){
-            return [];
-        }
         const limit = 10;
         return await itemRepository.searchByTitle(searchText,limit);
     }

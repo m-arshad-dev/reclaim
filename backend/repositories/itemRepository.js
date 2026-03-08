@@ -22,6 +22,7 @@ class ItemRepository {
         `,
         [`%${query}%`, limit]
     );
+    return result.rows;
     }
     async getItemsByUser(userId){
         const result = await db.query(`
