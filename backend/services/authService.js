@@ -3,9 +3,9 @@ const { comparePassword, hashPassword } = require("../utils/hash");
 const {
   generateAccessToken,
   generateRefreshToken,
-  verifyRefreshToken
+  verifyRefreshToken,
 } = require("../utils/jwt");
-
+const {generateToken} = require('../utils/token')
 class AuthService {
 
   async login(email, password) {
@@ -109,7 +109,43 @@ class AuthService {
     }
 
   }
+  async forgotPassword(email){
+    const token = generateToken(16);
 
+    const expires = new Date(Date.now()+ 3600000)
+
+    const user = await userRepo.setResetToken(
+      email ,
+      token ,
+      expires
+    );
+
+    if (!user){
+      throw new Error("User not foud")
+    }
+  console.log(
+   `Reset link: https://reclaim.pk/reset-password?token=${token}`
+  );
+
+  return { message:"Password reset email sent" };
+  }
+
+  async resetPassword(token,password){
+
+  const hash =  hashPassword(password)
+
+  const user = await userRepo.resetPassword(
+    token,
+    hash
+  );
+
+  if(!user){
+    throw new Error("Invalid or expired reset token");
+  }
+
+  return { message:"Password reset successful" };
+
+}
 }
 
 module.exports = new AuthService();

@@ -83,6 +83,38 @@ class AuthController {
       })
     }
   }
+  async forgotPassword(req ,res){
+    try {
+      const {email} = req.body;
+      const result = await authService.forgotPassword(email);
+      res.json(result)
+    }catch(err){
+      res.status(400).json({
+        error: err.message
+      })
+    }
+  }
+
+  async resetPassword(req,res){
+
+  try{
+
+    const { token,newPassword } = req.body;
+
+    const result = await authService.resetPassword(
+      token,
+      newPassword
+    );
+
+    res.json(result);
+
+  }catch(err){
+
+    res.status(400).json({ error: err.message });
+
+  }
+
+}
 }
 
 module.exports = new AuthController();

@@ -134,6 +134,39 @@ async updatePassword(id, hash) {
   return result.rowCount;
 }
 
+async setResetToken(email, token, expires){
+
+  const { rows } = await db.query(
+    `
+    UPDATE users
+    SET reset_password_token=$2,
+        reset_password_expires=$3
+    WHERE email=$1
+    RETURNING id,email
+    `,
+    [email,token,expires]
+  );
+
+  return rows[0];
+}
+async resetPassword(token,hash){
+
+  const { rows } = await db.query(
+    `
+    UPDATE users
+    SET password_hash=$2,
+        reset_password_token=NULL,
+        reset_password_expires=NULL
+    WHERE reset_password_token=$1
+    AND reset_password_expires > NOW()
+    RETURNING id
+    `,
+    [token,hash]
+  );
+
+  return rows[0];
+}
+
 }
 
 module.exports = new UserRepository();
