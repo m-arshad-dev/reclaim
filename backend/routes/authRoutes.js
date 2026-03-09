@@ -1,10 +1,13 @@
 const express = require("express");
 const controller = require("../controllers/authController");
 const authenticate = require("../middlewares/authenticate");
+const { loginValidator } = require("../validators/authValidator");
+const {changePasswordValidator} = require('../validators/userValidator')
+const validate = require("../middlewares/validate");
 
 const router = express.Router();
 
-router.post("/login", controller.login);
+router.post("/login",loginValidator ,validate, controller.login);
 // POST /auth/logout
 router.post("/logout" , controller.logout)
 // POST /auth/refresh
@@ -15,6 +18,8 @@ router.post("/verify-email", controller.verifyEmail);
 router.patch(
   "/change-password",
   authenticate,
+  changePasswordValidator,
+  validate,  
   controller.changePassword
 );
 // POST /auth/forgot-password
