@@ -1,6 +1,6 @@
 const userRepo = require("../repositories/userRepository");
-const { hashPassword } = require("../utils/hash");
-const generateToken = require("../utils/token");
+const { hashPassword, comparePassword } = require("../utils/hash");
+const {generateToken} = require("../utils/token");
 
 class UserService {
 
@@ -46,6 +46,8 @@ class UserService {
   async updateProfile(id, data) {
     return userRepo.updateProfile(id, data);
   }
+
+
 
 }
 

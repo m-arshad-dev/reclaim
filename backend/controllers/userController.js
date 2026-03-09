@@ -1,3 +1,4 @@
+
 const userService = require("../services/UserService");
 
 class UserController {
@@ -55,6 +56,8 @@ class UserController {
       })
     }
   }
+
+
 }
 
 module.exports = new UserController();

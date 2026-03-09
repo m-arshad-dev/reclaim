@@ -1,5 +1,5 @@
 const userRepo = require("../repositories/userRepository");
-const { comparePassword } = require("../utils/hash");
+const { comparePassword, hashPassword } = require("../utils/hash");
 const {
   generateAccessToken,
   generateRefreshToken,
@@ -81,6 +81,33 @@ class AuthService {
     return {
         message:"logged out Successfully"
     };
+  }
+    async changePassword(userId , currentPassword ,newPassword){
+    console.log("New password:", newPassword); 
+    const user = await userRepo.findById(userId);
+
+    if (!user){
+      throw new Error("User not found");
+    }
+    if (!currentPassword){
+      console.log("current")
+    }
+    if (!user.password_hash){
+      console.log(hash , "dhdlkf")
+    }
+    const valid = await comparePassword(currentPassword , user.password_hash);
+    console.log("vlaid")
+    if (!valid){
+      throw new Error("Current password Incorrect");
+    }
+    const hash =await hashPassword(newPassword)
+      console.log("Hash:", hash);
+    await userRepo.updatePassword(userId , hash);
+
+    return {
+      message: "Password updated Successfully"
+    }
+
   }
 
 }

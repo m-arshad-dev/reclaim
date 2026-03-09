@@ -1,5 +1,6 @@
 const express = require("express");
 const controller = require("../controllers/authController");
+const authenticate = require("../middlewares/authenticate");
 
 const router = express.Router();
 
@@ -10,6 +11,12 @@ router.post("/logout" , controller.logout)
 router.post("/refresh" , controller.refresh)
 // POST /auth/verify-email
 router.post("/verify-email", controller.verifyEmail);
+
+router.patch(
+  "/change-password",
+  authenticate,
+  controller.changePassword
+);
 // POST /auth/forgot-password
 // POST /auth/reset-password
 module.exports = router;

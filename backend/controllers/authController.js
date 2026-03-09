@@ -63,6 +63,26 @@ class AuthController {
       });
     }
   }
+    async changePassword(req, res){
+    try {
+      console.log("body:", req.body)
+      const {currentPassword , newPassword} = req.body;
+      if (!currentPassword || !newPassword) {
+    return res.status(400).json({ error: "Both passwords required" });
+  }  
+      const result = await authService.changePassword(
+        req.user.id,
+        currentPassword,
+        newPassword
+      );
+
+      res.json(result)
+    }catch(err){
+      res.status(400).json({
+        error:err.message
+      })
+    }
+  }
 }
 
 module.exports = new AuthController();

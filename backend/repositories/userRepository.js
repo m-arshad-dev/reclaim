@@ -40,7 +40,7 @@ class UserRepository {
 
   async findById(id) {
     const { rows } = await db.query(
-      `SELECT id,full_name,email,is_verified,trust_score,is_admin
+      `SELECT id,full_name,email,is_verified,trust_score,is_admin, password_hash
        FROM users WHERE id=$1`,
       [id]
     );
@@ -58,20 +58,20 @@ class UserRepository {
     const { rows } = await db.query(query, [id]);
     return rows[0];
   }
-  async verifyEmail(token) {
-    const { rows } = await db.query(
-      `UPDATE users
-       SET is_verified=TRUE,
-           email_verification_token=NULL,
-           email_verfication_expires= NULL
-       WHERE (email_verification_token=$1
-       AND email_verification_expires > NOW()
-       RETURNING id,full_name ,email,is_verified`,
-      [token]
-    );
+async verifyEmail(token) {
+  const { rows } = await db.query(
+    `UPDATE users
+     SET is_verified = TRUE,
+         email_verification_token = NULL,
+         email_verification_expires = NULL
+     WHERE email_verification_token = $1
+     AND email_verification_expires > NOW()
+     RETURNING id, full_name, email, is_verified`,
+    [token]
+  );
 
-    return rows[0];
-  }
+  return rows[0];
+}
 
   async updateRefreshToken(id, token) {
     await db.query(
@@ -118,6 +118,20 @@ async removeRefreshToken(token){
   );
 
   return rows[0];
+}
+async updatePassword(id, hash) {
+  const result = await db.query(
+    `UPDATE users
+     SET password_hash = $2
+     WHERE id = $1`,
+    [id, hash]
+  );
+
+  if (result.rowCount === 0) {
+    throw new Error("User not found or password not updated");
+  }
+
+  return result.rowCount;
 }
 
 }
