@@ -1,5 +1,6 @@
 node_moduels/
 ./backend/node_modules/
 .env
-./backend/env
+./backend/.env
 ../node_modules
+../../node_modules
