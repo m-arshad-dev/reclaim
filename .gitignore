@@ -8,3 +8,6 @@
 # Ignore environment files
 .env
 backend/.env
+
+backend/customError.txt
+backend/customError
