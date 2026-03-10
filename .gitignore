@@ -9,5 +9,5 @@
 .env
 backend/.env
 
-customError.txt
-customError
+backend/customError.txt
+backend/customError

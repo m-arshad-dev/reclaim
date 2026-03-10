@@ -5,12 +5,13 @@ const router = express.Router();
 const vlaidate = require('../middlewares/validate')
 const {registerValidator} = require("../validators/userValidator");
 const validate = require("../middlewares/validate");
+const { authLimiter } = require("../middlewares/rateLimiter");
 
 
 // GET /users/me
 router.get("/me" , authenticate , controller.me)
 
-router.post("/register",registerValidator , validate, controller.register);
+router.post("/register",authLimiter,registerValidator , validate, controller.register);
 
 // PATCH /users/me
 // PATCH /users/change-password

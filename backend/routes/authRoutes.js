@@ -4,10 +4,11 @@ const authenticate = require("../middlewares/authenticate");
 const { loginValidator } = require("../validators/authValidator");
 const {changePasswordValidator} = require('../validators/userValidator')
 const validate = require("../middlewares/validate");
+const { authLimiter } = require("../middlewares/rateLimiter");
 
 const router = express.Router();
 
-router.post("/login",loginValidator ,validate, controller.login);
+router.post("/login",authLimiter,loginValidator ,validate, controller.login);
 // POST /auth/logout
 router.post("/logout" , controller.logout)
 // POST /auth/refresh
@@ -23,7 +24,7 @@ router.patch(
   controller.changePassword
 );
 // POST /auth/forgot-password
-router.post("/forgot-password" , controller.forgotPassword)
+router.post("/forgot-password" ,authLimiter, controller.forgotPassword)
 // POST /auth/reset-password
 router.post("/reset-password",controller.resetPassword);
 module.exports = router;
