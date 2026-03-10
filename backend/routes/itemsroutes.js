@@ -8,7 +8,7 @@ const authMiddleware = require("../middlewares/itemsMiddle");
 // Lost Item Routes
 // -----------------------------
 router.post("/lost-items",authMiddleware ,itemsController.createLost);
-router.get("/lost-items", itemsController.getLost);
+router.get("/lost-items", authMiddleware,itemsController.getLost);
 router.get("/lost-items/:id", itemsController.getLostById);
 router.put("/lost-items/:id", itemsController.updateLost);
 router.delete("/lost-items/:id", itemsController.deleteItem);
@@ -17,8 +17,8 @@ router.post("/lost-items/:id/images", itemsController.uploadLostImage);
 // -----------------------------
 // Found Item Routes
 // -----------------------------
-router.post("/found-items", itemsController.createFound);
-router.get("/found-items", itemsController.getFound);
+router.post("/found-items",authMiddleware,itemsController.createFound);
+router.get("/found-items", authMiddleware,itemsController.getFound);
 router.get("/found-items/:id", itemsController.getFoundById);
 router.put("/found-items/:id", itemsController.updateFound);
 router.delete("/found-items/:id", itemsController.deleteItem);
