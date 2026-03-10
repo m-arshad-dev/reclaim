@@ -8,8 +8,7 @@ const app = express();
 const itemRoutes = require('./routes/itemRoutes'); 
 const claimRoutes = require('./routes/claimRoutes');
 const userRoutes = require('./routes/UserRoutes');
-
-
+const lostFoundRoutes = require('./routes/lostFoundRoutes')
 const authRoutes = require("./routes/authRoutes");
 
 app.use(helmet());
@@ -34,13 +33,11 @@ app.get('/test-db', async (req, res) => {
     res.status(500).json({ error: 'Database connection failed' });
   }
 });
-
-
-
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 app.use('/items', itemRoutes);
 app.use('/claims', claimRoutes);
+app.use("/lostfound",lostFoundRoutes);
 
 
 
