@@ -1,0 +1,165 @@
+. Lost Item Management Module
+Responsibilities
+
+Create lost item listings
+
+Store item details
+
+Attach photos
+
+Track item status
+
+Enable search indexing
+
+Endpoints
+
+Create Lost Item Report
+
+POST /api/lost-items
+
+Request
+
+{
+  "title": "Lost Wallet",
+  "description": "Black leather wallet",
+  "category": "wallet",
+  "location": "UOG Campus",
+  "date_lost": "2026-03-01"
+}
+
+Get All Lost Items
+
+GET /api/lost-items
+
+Get Single Lost Item
+
+GET /api/lost-items/{id}
+
+Update Lost Item
+
+PUT /api/lost-items/{id}
+
+Delete Lost Item
+
+DELETE /api/lost-items/{id}
+
+Upload Image
+
+
+POST /api/lost-items/{id}/images
+
+
+3. Found Item Management Module
+Responsibilities
+
+Create found item listings
+
+Manage finder details
+
+Allow anonymous or registered submissions
+
+Track claim status
+
+Endpoints
+
+Create Found Item
+
+POST /api/found-items
+
+Get All Found Items
+
+GET /api/found-items
+
+Get Single Found Item
+
+GET /api/found-items/{id}
+
+Update Found Item
+
+PUT /api/found-items/{id}
+
+Delete Found Item
+
+DELETE /api/found-items/{id}
+
+Upload Item Image
+
+POST /api/found-items/{id}/images
+4. Search & Filtering Module
+Responsibilities
+
+Search items by:
+
+category
+
+location
+
+keyword
+
+date
+
+Provide fast search results
+
+Enable AI matching later
+
+Endpoints
+
+Search Items
+
+GET /api/search
+
+Example
+
+GET /api/search?keyword=wallet&location=gujrat&category=accessories
+
+Filter Lost Items
+
+GET /api/lost-items?category=phone&location=uog
+
+Filter Found Items
+
+GET /api/found-items?category=id-card
+
+5. Claim Management Module
+Responsibilities
+
+Allow users to claim found items
+
+Ownership verification questions
+
+Track claim status
+
+Prevent fraud
+
+Endpoints
+
+Submit Claim Request
+
+POST /api/claims
+
+Request
+
+{
+  "found_item_id": 22,
+  "answers": {
+    "color": "black",
+    "brand": "leather",
+    "identifier": "student card inside"
+  }
+}
+
+View Claims
+
+GET /api/claims
+
+Get Single Claim
+
+GET /api/claims/{id}
+
+Approve Claim
+
+PUT /api/claims/{id}/approve
+
+Reject Claim
+
+PUT /api/claims/{id}/reject
