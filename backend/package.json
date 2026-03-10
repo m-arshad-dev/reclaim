@@ -19,18 +19,9 @@
     "express-validator": "^7.3.1",
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.3",
-<<<<<<< HEAD
-    "pg": "^8.20.0",
-    "pg-format": "^1.0.4",
-    "uuid": "^13.0.0"
-  },
-  "devDependencies": {
-    "nodemon": "^3.1.14"
-=======
     "morgan": "^1.10.1",
     "pg": "^8.19.0",
     "uuid": "^13.0.0",
     "winston": "^3.19.0"
->>>>>>> 926396de029fc3d530c34030668ecab078b35326
   }
 }
