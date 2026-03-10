@@ -2,7 +2,7 @@ const itemRepository = require('../repositories/itemRepository');
 class ItemService{
     async getHomePageRecentItems(){
         const limit = 8;
-        return await itemRepository.gerRecentItems(limit);
+        return await itemRepository.getRecentItems(limit);
     }
     async searchItemsByTitle(searchText){
         const limit = 10;
