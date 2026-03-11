@@ -1,0 +1,294 @@
+Perfect. Now we move to **Step 9 — Global Error Handling (Professional API Structure)**.
+
+Right now your controllers have many `try/catch` blocks.
+Professional backends **centralize error handling** so controllers stay clean.
+
+Goal:
+
+```
+Controller → throws error
+Middleware → catches error
+API → returns standardized response
+```
+
+This is how **production Node.js APIs are structured**.
+
+---
+
+# Step 9.1 — Create Error Middleware
+
+Create file:
+
+```
+src/middlewares/errorHandler.js
+```
+
+```javascript
+module.exports = (err, req, res, next) => {
+
+  console.error(err);
+
+  const statusCode = err.statusCode || 500;
+
+  res.status(statusCode).json({
+    success: false,
+    message: err.message || "Internal Server Error"
+  });
+
+};
+```
+
+This middleware:
+
+* logs errors
+* prevents server crashes
+* returns clean API responses
+
+---
+
+# Step 9.2 — Create Custom Error Class
+
+Create:
+
+```
+src/utils/AppError.js
+```
+
+```javascript
+class AppError extends Error {
+
+  constructor(message, statusCode = 400) {
+    super(message);
+    this.statusCode = statusCode;
+  }
+
+}
+
+module.exports = AppError;
+```
+
+Now we can throw **clean structured errors**.
+
+Example:
+
+```javascript
+throw new AppError("Invalid credentials",401);
+```
+
+---
+
+# Step 9.3 — Register Error Middleware in App
+
+Open your main server file.
+
+Example:
+
+```
+src/app.js
+```
+
+Add **at the bottom after routes**.
+
+```javascript
+const errorHandler = require("./middlewares/errorHandler");
+
+app.use(errorHandler);
+```
+
+Order must be:
+
+```
+routes
+↓
+errorHandler
+```
+
+---
+
+# Step 9.4 — Update Services to Throw AppError
+
+Example in **login service**.
+
+Before:
+
+```javascript
+throw new Error("Invalid credentials");
+```
+
+Replace with:
+
+```javascript
+const AppError = require("../../utils/AppError");
+
+throw new AppError("Invalid credentials",401);
+```
+
+---
+
+Example in **changePassword**.
+
+Before:
+
+```javascript
+throw new Error("Current password incorrect");
+```
+
+After:
+
+```javascript
+throw new AppError("Current password incorrect",400);
+```
+
+---
+
+# Step 9.5 — Clean Controllers
+
+Now controllers become **much cleaner**.
+
+Example login controller:
+
+Before:
+
+```javascript
+async login(req,res){
+
+ try{
+
+  const result = await authService.login(req.body);
+
+  res.json(result);
+
+ }catch(err){
+
+  res.status(400).json({ error: err.message });
+
+ }
+
+}
+```
+
+Replace with:
+
+```javascript
+async login(req,res,next){
+
+  const result = await authService.login(req.body);
+
+  res.json(result);
+
+}
+```
+
+And if something fails:
+
+```
+Service throws error → middleware handles it
+```
+
+---
+
+# Step 9.6 — Async Wrapper (Even Cleaner)
+
+Create helper:
+
+```
+src/utils/asyncHandler.js
+```
+
+```javascript
+module.exports = fn => (req,res,next) => {
+  Promise.resolve(fn(req,res,next)).catch(next);
+};
+```
+
+---
+
+Use it in routes.
+
+Example:
+
+```javascript
+const asyncHandler = require("../utils/asyncHandler");
+
+router.post(
+  "/login",
+  loginValidator,
+  validate,
+  asyncHandler(controller.login)
+);
+```
+
+Now you **never need try/catch again**.
+
+---
+
+# Step 9.7 — Test Error System
+
+Test with wrong login:
+
+```
+POST /auth/login
+```
+
+Body:
+
+```json
+{
+ "email":"test@test.com",
+ "password":"wrong"
+}
+```
+
+Response:
+
+```json
+{
+ "success": false,
+ "message": "Invalid credentials"
+}
+```
+
+Clean and professional.
+
+---
+
+# Your Backend Is Now Structured Like This
+
+```
+controllers
+services
+repositories
+middlewares
+validators
+utils
+```
+
+This is **industry-level architecture**.
+
+---
+
+# Next Step (VERY IMPORTANT SECURITY)
+
+Next we will implement:
+
+# Step 10 — Rate Limiting
+
+Protects:
+
+```
+login endpoint
+password reset
+register
+```
+
+This prevents:
+
+* brute force attacks
+* bots
+* spam registrations
+
+Used by **Stripe, GitHub, and most APIs**.
+
+---
+
+Reply **"ready for rate limiting"** and we will implement it step-by-step and test it just like before.

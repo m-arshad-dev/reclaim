@@ -1,44 +1,53 @@
-const bcrypt = require("bcrypt");
-const userRepository = require("../repositories/userRepository");
+const userRepo = require("../repositories/userRepository");
+const { hashPassword, comparePassword } = require("../utils/hash");
+const {generateToken} = require("../utils/token");
 
 class UserService {
 
   async register(data) {
 
-    const existingUser = await userRepository.findByPhone(data.phone_number);
+    const existing = await userRepo.findByEmail(data.email);
 
-    if (existingUser) {
-      throw new Error("Phone number already registered");
+    if (existing) {
+      throw new Error("Email already registered");
     }
 
-    const hash = await bcrypt.hash(data.password, 10);
+    const hash = await hashPassword(data.password);
 
-    const user = await userRepository.createUser({
+    const verificationToken = generateToken(16);
+    const expires = new Date(Date.now() + 24*60*60*1000);
+
+    const user = await userRepo.create({
       full_name: data.full_name,
-      phone_number: data.phone_number,
+
       email: data.email,
-      password_hash: hash
+      password_hash: hash,
+      email_verification_token: verificationToken,
+      email_verification_expires: expires
     });
 
-    return user;
-  }
-
-  async login(phone, password) {
-
-    const user = await userRepository.findByPhone(phone);
-
-    if (!user) {
-      throw new Error("User not found");
-    }
-
-    const match = await bcrypt.compare(password, user.password_hash);
-
-    if (!match) {
-      throw new Error("Invalid credentials");
-    }
+    //TODO: Send Email With Token (using email serivces)
+    console.log("Send verification link:", `https://reclaim.pk/auth/verify-email?token=${verificationToken}`);
 
     return user;
   }
+
+  async getProfile(id) {
+
+    const user = await userRepo.findById(id);
+    if (!user){
+      throw new Error("User not found")
+    }
+
+    return user;
+
+  }
+
+  async updateProfile(id, data) {
+    return userRepo.updateProfile(id, data);
+  }
+
+
 
 }
 

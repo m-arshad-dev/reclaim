@@ -1,0 +1,124 @@
+//register a user
+curl -X POST http://localhost:5000/users/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "full_name": "Ali Khan",
+    "email": "ali@test.com",
+    "password": "12345678"
+  }'
+
+//response 
+{"success":true,"data":{"id":"0d85d95b-4637-45d5-b769-e9369deca8d1","full_name":"Ali Khan","email":"ali@test.com","is_verified":false,"created_at":"2026-03-08T12:53:12.671Z"}}
+
+
+//login a user
+
+curl -X POST http://localhost:5000/users/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "ali@test.com",
+    "password": "12345678"
+  }'
+
+//response we got is 
+{"accessToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBkODVkOTViLTQ2MzctNDVkNS1iNzY5LWU5MzY5ZGVjYThkMSIsImlzX2FkbWluIjpmYWxzZSwiaWF0IjoxNzcyOTkxMTMwLCJleHAiOjE3NzI5OTIwMzB9.8N36XIRaN9h1j1TIoMRTIyqw2e9EjbFfmoyDF6uqJlE",
+"refreshToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBkODVkOTViLTQ2MzctNDVkNS1iNzY5LWU5MzY5ZGVjYThkMSIsImlhdCI6MTc3Mjk5MTEzMCwiZXhwIjoxNzczNTk1OTMwfQ.OYrXMw0CjEeYXct_ahZ3RSuuYlMpNkTOY9Kn7NYTJ4I"}
+
+
+//wrong version 
+curl -X POST http://localhost:5000/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "ali@test.com",
+    "password": "wrong"
+  }'
+
+// reponse 
+{"error":"Invalid Credentials"}
+
+//personal profile means the protected route
+ curl -X GET http://localhost:5000/users/me   -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBkODVkOTViLTQ2MzctNDVkNS1iNzY5LWU5MzY5ZGVjYThkMSIsImlzX2FkbWluIjpmYWxzZSwiaWF0IjoxNzcyOTkxMTMwLCJleHAiOjE3NzI5OTIwMzB9.8N36XIRaN9h1j1TIoMRTIyqw2e9EjbFfmoyDF6uqJlE"
+
+ //response 
+{"id":"0d85d95b-4637-45d5-b769-e9369deca8d1",
+"full_name":"Ali Khan",
+"email":"ali@test.com",
+"is_verified":false,
+"trust_score":0,
+"is_admin":false}
+
+
+//refresh tokens endpoint
+ curl -X POST http://localhost:5000/auth/refresh \th/refresh \
+  -H "Content-Type: application/json" \
+  -d '{
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBkODVkOTViLTQ2MzctNDVkNS1iNzY5LWU5MzY5ZGVjYThkMSIsImlhdCI6MTc3Mjk5Mjg1MywiZXhwIjoxNzczNTk3NjUzfQ.i83h-pl9dJH96wGjQwlFUUP8dD6nBjg6S4S7l03tsKk"
+  }'
+
+//response
+{"accessToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBkODVkOTViLTQ2MzctNDVkNS1iNzY5LWU5MzY5ZGVjYThkMSIsImlzX2FkbWluIjpmYWxzZSwiaWF0IjoxNzcyOTkyOTAyLCJleHAiOjE3NzI5OTM4MDJ9.oSWIzRyEn933HWnT_LnR-c7fB3rhGs2Am0xawM7oBJY"}
+
+
+//logout request
+curl -X POST http://localhost:5000/auth/logout \
+  -H "Content-Type: application/json" \
+  -d '{
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBkODVkOTViLTQ2MzctNDVkNS1iNzY5LWU5MzY5ZGVjYThkMSIsImlhdCI6MTc3Mjk5Mjg1MywiZXhwIjoxNzczNTk3NjUzfQ.i83h-pl9dJH96wGjQwlFUUP8dD6nBjg6S4S7l03tsKk"
+  }'
+
+//response
+{"message":"logged out Successfully"}
+
+
+//email verification procedure first we will register and then verify this 
+arshad@debian:~/reclaim/backend$ curl -X POST http://localhost:5000/users/register   -H "Content-Type: application/json"   -d '{
+    "full_name": "Ahmed Ali",
+    "email": "ahmed@test.com",
+    "password": "12345678",
+    "phone_number": "03001112222"
+  }'
+{"success":true,"data":{"id":"610c9e4d-0bcc-49ull_name":"Ahmed Ali","email":"ahmed@test.com"eated_at":"2026-03-09T04:55:54.612Z"}}
+
+
+//verification
+curl -X POST http://localhost:5000/auth/verify-email \
+  -H "Content-Type: application/json" \
+  -d '{
+    "token": "PASTE_TOKEN_FROM_CONSOLE"
+  }'
+
+// with token 
+ curl -X POST http://localhost:5000/auth/verify-email   -H "Content-Type: application/json"   -d '{
+    "token": "938e7d120c25acb443778dddbb13e461"
+  }'
+
+// response
+{"message":"email verified Successfully","user":{"id":"610c9e4d-0bcc-4961-b80e-e658100b377e","full_name":"Ahmed Ali","email":"ahmed@test.com","is_verified":true}}
+
+
+//update paswrod first loginn 
+curl -X POST http://localhost:5000/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "ahmed@test.com",
+    "password": "12345678"
+  }'
+//response
+{"accessToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxMGM5ZTRkLTBiY2MtNDk2MS1iODBlLWU2NTgxMDBiMzc3ZSIsImlzX2FkbWluIjpmYWxzZSwiaWF0IjoxNzczMDMzNzAyLCJleHAiOjE3NzMwMzQ2MDJ9.42Blyjptv4k-RuiAOl-xU24jFnwm0B1iyP5SuD_KaHI","refreshToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxMGM5ZTRkLTBiY2MtNDk2MS1iODBlLWU2NTgxMDBiMzc3ZSIsImlhdCI6MTc3MzAzMzcwMiwiZXhwIjoxNzczNjM4NTAyfQ.l-Yr3zCIFJBpsjY4NlerC1wj11uE9I_YCqyyjhBY_5U"}
+
+//update password request now 
+
+
+//forgot password
+curl -X POST http://localhost:5000/auth/forgot-password   -H "Content-Type: application/json"   -d '{
+    "email": "ahmed@test.com"
+  }'
+{"message":"Password reset email sent"}
+Reset link: https://reclaim.pk/reset-password?token=5f7800ec7befcd5c454d9263fc0aacd7
+
+curl -X POST http://localhost:5000/auth/reset-password \
+  -H "Content-Type: application/json" \
+  -d '{
+    "token": "5f7800ec7befcd5c454d9263fc0aacd7",
+    "newPassword": "newpassword123"
+  }'

@@ -1,6 +1,4 @@
 const express = require('express');
-
-// FIX: correct path to db connection
 const pool = require('./db');
 
 const app = express();
@@ -9,6 +7,7 @@ const app = express();
 const itemRoutes = require('./routes/itemRoutes'); 
 const claimRoutes = require('./routes/claimRoutes');
 const userRoutes = require('./routes/UserRoutes');
+
 
 app.use(express.json());
 
@@ -33,12 +32,11 @@ app.get('/test-db', async (req, res) => {
   }
 });
 
-// API routes
-app.use("/api/users", userRoutes);
-app.use("/api/items", itemRoutes);
-app.use("/api/claims", claimRoutes);
 
-// Start server
+
+app.use("/api/users", userRoutes);
+app.use('/items', itemRoutes);
+app.use('/claims', claimRoutes);
 const PORT = 5000;
 
 app.listen(PORT, () => {

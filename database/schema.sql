@@ -19,7 +19,6 @@ CREATE TABLE users (
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-
  
 
 CREATE INDEX idx_users_phone ON users(phone_number);
@@ -223,3 +222,13 @@ EXECUTE FUNCTION resolve_item();
 CREATE UNIQUE INDEX idx_unique_active_post
 ON items(user_id, title)
 WHERE is_active = TRUE;
+
+
+-- these are the few colums add to the user table for authenticaiton  and authorization
+-- ALTER TABLE users
+-- ADD COLUMN email_verification_token TEXT,
+-- ADD COLUMN email_verification_expires TIMESTAMP,
+-- ADD COLUMN refresh_token TEXT;
+
+-- ADD COLUMN reset_password_token TEXT,
+-- ADD COLUMN reset_password_expires TIMESTAMP;
