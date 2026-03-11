@@ -8,7 +8,7 @@ const app = express();
 const itemRoutes = require('./routes/itemRoutes'); 
 const claimRoutes = require('./routes/claimRoutes');
 const userRoutes = require('./routes/UserRoutes');
-const lostFoundRoutes = require('./routes/lostFoundRoutes')
+const lostFoundRoutes = require('./routes/itemsroutes')
 const authRoutes = require("./routes/authRoutes");
 
 app.use(helmet());
@@ -37,13 +37,8 @@ app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 app.use('/items', itemRoutes);
 app.use('/claims', claimRoutes);
-app.use("/lostfound",lostFoundRoutes);
-
-
-
-
-
-
+app.use("/lostitems",lostFoundRoutes);
+app.use("/founditems",lostFoundRoutes);
 const PORT = 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
