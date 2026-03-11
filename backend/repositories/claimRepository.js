@@ -1,15 +1,31 @@
 const db = require('../db');
+
 class ClaimRepository{
+
+    async createClaim(itemId, claimantId, verificationAnswer){
+        const result = await db.query(`
+            insert into claims (item_id, claimant_id, verification_answer)
+            values ($1,$2,$3)
+            returning *
+        `,
+        [itemId, claimantId, verificationAnswer]);
+
+        return result.rows[0];
+    }
+
     async getClaimsByItem(itemId){
         const result = await db.query(`
-            select c.id as claim_id, u.full_name as claimant_name,c.verification_answer, c.status
+            select c.id as claim_id,
+                   u.full_name as claimant_name,
+                   c.verification_answer,
+                   c.status
             from claims c
-            join users u on claimant_id = u.id
+            join users u on c.claimant_id = u.id
             where c.item_id = $1
             order by c.created_at asc
-            `,
-            [itemId]
-        );
+        `,
+        [itemId]);
+
         return result.rows;
     }
 
@@ -17,10 +33,12 @@ class ClaimRepository{
         const result = await db.query(`
             update claims
             set status = $1,
-            updated_at = current_timestamp
+                updated_at = current_timestamp
             where id = $2
-            returning *`,
+            returning *
+        `,
         [status, claimId]);
+
         return result.rows[0];    
     }
 }
