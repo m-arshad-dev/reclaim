@@ -1,26 +1,26 @@
 const claimService = require('../services/claimService');
 
-class ClaimController{
+class ClaimController {
 
-    async getClaimsByItem(req, res){
-        const {itemId} = req.params;
+    async getClaimsByItem(req, res) {
+        const { itemId } = req.params;
 
-        try{
+        try {
             const claims = await claimService.getClaimsByItem(itemId);
             res.status(200).json(claims);
         }
-        catch(error){
-            res.status(500).json({error: error.message});
+        catch (error) {
+            res.status(500).json({ error: error.message });
         }
     }
 
     // ADDED: This function handles when a user submits a claim for an item
     // It receives item_id, claimant_id and verification_answer from the request body
-    async createClaim(req, res){
+    async createClaim(req, res) {
 
         const { item_id, claimant_id, verification_answer } = req.body;
 
-        try{
+        try {
 
             // call service layer to create the claim
             const newClaim = await claimService.createClaim(
@@ -32,32 +32,32 @@ class ClaimController{
             res.status(201).json(newClaim);
 
         }
-        catch(error){
-            res.status(500).json({error: error.message});
+        catch (error) {
+            res.status(500).json({ error: error.message });
         }
     }
 
-    async approveClaim(req, res){
-        const {id} = req.params;
+    async approveClaim(req, res) {
+        const { id } = req.params;
 
-        try{
+        try {
             const updatedClaim = await claimService.approveClaim(id);
             res.status(200).json(updatedClaim);
         }
-        catch(error){
-            res.status(500).json({error: error.message});
+        catch (error) {
+            res.status(500).json({ error: error.message });
         }
     }
 
-    async rejectClaim(req, res){
-        const {id} = req.params;
+    async rejectClaim(req, res) {
+        const { id } = req.params;
 
-        try{
+        try {
             const updatedClaim = await claimService.rejectClaim(id);
             res.status(200).json(updatedClaim);
         }
-        catch(error){
-            res.status(500).json({error: error.message});
+        catch (error) {
+            res.status(500).json({ error: error.message });
         }
     }
 
