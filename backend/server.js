@@ -1,14 +1,15 @@
 const express = require('express');
+const cors = require('cors');   // ✅ add this
 const pool = require('./db');
 
 const app = express();
 
 // Routes
-const itemRoutes = require('./routes/itemRoutes'); 
+const itemRoutes = require('./routes/itemRoutes');
 const claimRoutes = require('./routes/claimRoutes');
 const userRoutes = require('./routes/UserRoutes');
 
-
+app.use(cors());                 // ✅ add this
 app.use(express.json());
 
 // Home route
@@ -32,11 +33,10 @@ app.get('/test-db', async (req, res) => {
   }
 });
 
-
-
 app.use("/api/users", userRoutes);
-app.use('/items', itemRoutes);
-app.use('/claims', claimRoutes);
+app.use('/api/items', itemRoutes);
+app.use('/api/claims', claimRoutes);
+
 const PORT = 5000;
 
 app.listen(PORT, () => {

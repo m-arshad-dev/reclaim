@@ -1,6 +1,6 @@
 const userRepo = require("../repositories/userRepository");
 const { hashPassword, comparePassword } = require("../utils/hash");
-const {generateToken} = require("../utils/token");
+const { generateToken } = require("../utils/token");
 
 class UserService {
 
@@ -15,7 +15,7 @@ class UserService {
     const hash = await hashPassword(data.password);
 
     const verificationToken = generateToken(16);
-    const expires = new Date(Date.now() + 24*60*60*1000);
+    const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
     const user = await userRepo.create({
       full_name: data.full_name,
@@ -35,7 +35,7 @@ class UserService {
   async getProfile(id) {
 
     const user = await userRepo.findById(id);
-    if (!user){
+    if (!user) {
       throw new Error("User not found")
     }
 
