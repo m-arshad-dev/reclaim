@@ -1,15 +1,16 @@
 const express = require('express');
 const cors = require('cors');   // ✅ add this
 const pool = require('./db');
-
+const cors = require("cors")
 const app = express();
 
 // Routes
 const itemRoutes = require('./routes/itemRoutes');
 const claimRoutes = require('./routes/claimRoutes');
 const userRoutes = require('./routes/UserRoutes');
+const authRoutes = require('./routes/authRoutes')
 
-app.use(cors());                 // ✅ add this
+app.use(cors());                 // ✅ add thisapp.use(cors())
 app.use(express.json());
 
 // Home route
@@ -32,10 +33,16 @@ app.get('/test-db', async (req, res) => {
     res.status(500).json({ error: 'Database connection failed' });
   }
 });
+// Middleware to log requests
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url} `, JSON.stringify(req.body, null, 2));
+  next();
+});
 
 app.use("/api/users", userRoutes);
-app.use('/api/items', itemRoutes);
-app.use('/api/claims', claimRoutes);
+app.use('api/api/items', itemRoutes);
+app.use('api/api/claims', claimRoutes);
+app.use("/api/auth" , authRoutes)
 
 const PORT = 5000;
 
