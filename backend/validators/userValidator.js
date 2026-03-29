@@ -2,7 +2,7 @@ const { body } = require("express-validator");
 
 exports.registerValidator = [
 
-  body("name")
+  body("full_name")
     .notEmpty()
     .withMessage("Name required"),
 
@@ -11,7 +11,7 @@ exports.registerValidator = [
     .withMessage("Valid email required"),
 
   body("password")
-    .isLength({ min:8 })
+    .isLength({ min:4 })
     .withMessage("Password must be at least 8 characters")
 
 ];
