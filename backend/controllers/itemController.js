@@ -38,6 +38,20 @@ class ItemController {
             res.status(500).json({ message: error.message });
         }
     }
+
+    async getItems(req, res) {
+        try{
+            const { status, categoryId, locationId, city, limit, offset } = req.query;
+            const items = await itemService.getItems({status, categoryId, locationId, city, limit, offset});
+            res.status(200).json({
+                success: true,
+                data: items,
+                count: items.length
+            });
+        }catch(error){
+            res.status(500).json({ message: error.message });
+        }
+    }
 }
 
 module.exports = new ItemController();

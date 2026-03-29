@@ -78,6 +78,42 @@ class ItemRepository {
 
         return result.rows[0];
     }
+
+    async getItems({status = null, categoryId = null, locationId = null, city = null, limit = 20, offset = 0} = {}) {
+        const conditions = ['i.is_active = TRUE'];
+        const values = [];
+        let paramIndex = 1;
+
+        if (status){
+            conditions.push(`i.status = $${paramIndex++}`);
+            values.push(status);
+        }
+        if (categoryId){
+            conditions.push(`i.category_id = $${paramIndex++}`);
+            values.push(categoryId);
+        }
+        if(locationId){
+            conditions.push(`i.location_id = $${paramIndex++}`);
+            values.push(locationId);
+        }
+        if(city){
+            conditions.push(`l.city ILIKE $${paramIndex++}`);
+            values.push(`%${city}%`);
+        }
+        values.push(limit, offset);
+
+        const query = `SELECT
+            i.id, i.user_id, i.title, i.description, i.image_url, i.status, i.is_active, i.created_at, i.updated_at, c.name AS category_name, l.city AS location_city
+            
+            From items i
+            LEFT JOIN categories x ON c.id = i.cegrory_id
+            LEFT JOIN locations l ON i.location_id = l.id
+            WHERE ${conditions.join(' AND ')}
+            ORDER BY i.created_at DESC
+            LIMIT $${paramIndex++} OFFSET $${paramIndex++}`;
+            const {rows} = await pool.query(query, values);
+            return rows;
+    }
 }
 
 module.exports = new ItemRepository();

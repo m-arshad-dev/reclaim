@@ -16,4 +16,7 @@ router.get('/my-posts/:userId', (req, res) => itemController.getMyPosts(req, res
 // Get item details
 router.get('/:id', (req, res) => itemController.getItemDetails(req, res));
 
+// Get items with filters
+router.get('/', (req, res) => itemController.getItems(req, res));
+
 module.exports = router;
