@@ -9,6 +9,8 @@ const itemRoutes = require('./routes/itemRoutes');
 const claimRoutes = require('./routes/claimRoutes');
 const userRoutes = require('./routes/UserRoutes');
 const authRoutes = require('./routes/authRoutes')
+const locationRoutes = require('./routes/locationRouter');
+const categoryRoutes = require('./routes/categoryRoutes');
 
 app.use(cors());                 // ✅ add thisapp.use(cors())
 app.use(express.json());
@@ -40,10 +42,11 @@ app.use((req, res, next) => {
 });
 
 app.use("/api/users", userRoutes);
-app.use('api/api/items', itemRoutes);
-app.use('api/api/claims', claimRoutes);
+app.use('/api/items', itemRoutes);
+app.use('/api/claims', claimRoutes);
 app.use("/api/auth" , authRoutes)
-
+app.use('/api/locations', locationRoutes);
+app.use('/api/categories', categoryRoutes);
 const PORT = 5000;
 
 app.listen(PORT, () => {
