@@ -1,6 +1,36 @@
 const db = require('../db');
 
 class ItemRepository {
+    async create ({userid,title,description,status,category_id,location_id,imageURL}){
+      if(category_id){
+        const categ = await this.db.query(
+            `SELECT id FROM categories WHERE id =$1`,
+            [parseInt(category_id)]
+        );
+        if(categ.rowCount===0) throw {status: 400, message:"category_id does not exist"};      
+}
+    if (location_id){
+        const log = await this.db.query(
+            `SELECT id FROM location WHERE id =$1`,
+            [parseInt(location_id)]
+        );
+        if(loc.rowCount===0) throw {status: 400 ,message:"location_id does not exist"};
+        const {rows} = await this.db.query(
+            `INSERT INTO items(userid,location_id,title,description,imageURL,status) VALUES ($!,$2,$3,$4,$5,$6,$7)RETURNING 
+            userid,title,description,status,imageURL,category_id,location_id,is_active,created_at`,
+            [
+      userid,
+      category_id ? parseInt(category_id) : null,
+      location_id ? parseInt(location_id) : null,
+      title.trim(),
+      description.trim(),
+      imageURL,
+      status, 
+            ]
+        );
+        return rows[0];
+    }
+    }
 
     async getRecentItems(limit) {
         const result = await db.query(
