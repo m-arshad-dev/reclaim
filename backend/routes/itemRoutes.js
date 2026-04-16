@@ -25,8 +25,8 @@ const upload = multer({
     },
 });
 router.post("/lost-found",authenticate,  upload.single("image"),itemController.createItem);
-router.get("/categories"  ,  itemController.getAllCategoreis);
-router.get("/locations",     itemController.getAllLocations);
+router.get("/categories"  ,  itemController.getAllCategorie);
+router.get("/locations",     itemController.getAllLocation);
 router.get('/recent',(req, res) =>    itemController.getRecentItems(req, res));
 
 // Search items

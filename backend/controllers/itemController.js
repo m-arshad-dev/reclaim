@@ -2,10 +2,12 @@ const itemService = require('../services/itemService');
 
 class ItemController {
     async createItem(req,res){
+        console.log("REQ USER:", req.user);
+    console.log("USER ID:", req.user?.id);
         try{
          const {title,description,status,category_id,location_id}= req.body;
-         const userId = req.user.id;
-         const imageURL = req.file ? `/upload/${req.file.filename}`:null;
+         const userId = req.user?.userId || req.user?.id;
+         const image_url = req.file ? `/upload/${req.file.filename}`:null;
          const errors =[];
          if (!title || title.trim().length<3)
         errors.push("title must be at least 3 characters");
@@ -21,13 +23,13 @@ class ItemController {
         return res.status(400).json({ success: false, errors });
      }
      const item = await itemService.createItem({
-        userId,
+        userId: userId,
         title,
         description,
         status,
         category_id,
         location_id,
-        imageUrl,
+        image_url,
      });
      return res.status(201).json({
         success:true,
@@ -51,16 +53,16 @@ class ItemController {
       return res.status(500).json({ success: false, message: "Internal server error" });
     }
 }
-   async getAllCategoreis(req,res){
+   async getAllCategorie(req, res){
     try{
-        const categories = await itemService.getAllCategoreis();
+        const categories = await itemService.getAllCategories();
          return res.status(200).json({ success: true, data: categories });
     }
       catch (err) {
       return res.status(500).json({ success: false, message: "Internal server error" });
     }
    }
-      async getAllLocations(req, res) {
+      async getAllLocation(req, res) {
     try {
       const locations = await itemService.getAllLocations();
       return res.status(200).json({ success: true, data: locations });
@@ -68,7 +70,7 @@ class ItemController {
       return res.status(500).json({ success: false, message: "Internal server error" });
     }
   }
-    async getRecentItems(req, res) {
+    async getRecentItem(req, res) {
         try {
             const items = await itemService.getHomePageRecentItems();
             res.status(200).json(items);

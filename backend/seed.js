@@ -15,14 +15,7 @@ const categories = [
 
 const locations = [
   "Lahore",
-  "Karachi",
-  "Islamabad",
-  "Rawalpindi",
-  "Faisalabad",
-  "Multan",
-  "Peshawar",
-  "Quetta",
-  "Sialkot",
+  "Gujrat",
   "Gujranwala",
 ];
 
@@ -48,9 +41,7 @@ const seed = async () => {
 
   } catch (err) {
     console.error("❌ Seeding failed:", err.message);
-  } finally {
-    await pool.end();
-  }
+  } 
 };
 
 seed();

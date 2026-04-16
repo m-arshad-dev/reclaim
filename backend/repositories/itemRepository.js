@@ -1,36 +1,51 @@
 const db = require('../db');
 
 class ItemRepository {
-    async create ({userid,title,description,status,category_id,location_id,imageURL}){
-      if(category_id){
-        const categ = await this.db.query(
-            `SELECT id FROM categories WHERE id =$1`,
-            [parseInt(category_id)]
-        );
-        if(categ.rowCount===0) throw {status: 400, message:"category_id does not exist"};      
-}
-    if (location_id){
-        const log = await this.db.query(
-            `SELECT id FROM location WHERE id =$1`,
-            [parseInt(location_id)]
-        );
-        if(loc.rowCount===0) throw {status: 400 ,message:"location_id does not exist"};
-        const {rows} = await this.db.query(
-            `INSERT INTO items(userid,location_id,title,description,imageURL,status) VALUES ($!,$2,$3,$4,$5,$6,$7)RETURNING 
-            userid,title,description,status,imageURL,category_id,location_id,is_active,created_at`,
+    async create({ userId, title, description, status, category_id, location_id, image_url }) {
+        if (category_id) {
+            const categ = await db.query(
+                `SELECT id FROM categories WHERE id = $1`,
+                [parseInt(category_id)]
+            );
+            if (categ.rowCount === 0) throw { status: 400, message: "category_id does not exist" };
+        }
+
+        if (location_id) {
+            const log = await db.query(
+                `SELECT id FROM locations WHERE id = $1`,
+                [parseInt(location_id)]
+            );
+            if (log.rowCount === 0) throw { status: 400, message: "location_id does not exist" };
+        }
+        const { rows } = await db.query(
+            `INSERT INTO items(user_id, title, description, status, category_id, location_id, image_url)
+             VALUES ($1, $2, $3, $4, $5, $6, $7)
+             RETURNING user_id, title, description, status, image_url, category_id, location_id, is_active, created_at`,
             [
-      userid,
-      category_id ? parseInt(category_id) : null,
-      location_id ? parseInt(location_id) : null,
-      title.trim(),
-      description.trim(),
-      imageURL,
-      status, 
+                userId,
+                title.trim(),
+                description.trim(),
+                status,
+                category_id ? parseInt(category_id) : null,
+                location_id ? parseInt(location_id) : null,
+                image_url,
             ]
         );
         return rows[0];
     }
-    }
+async getAllCategories() {
+    const result = await db.query(
+      `SELECT id, name FROM categories ORDER BY id DESC`
+    );
+    return result.rows;
+  }
+
+  async getAllLocations() {
+    const result = await db.query(
+      `SELECT id, city FROM locations ORDER BY id DESC`
+    );
+    return result.rows;
+  }
 
     async getRecentItems(limit) {
         const result = await db.query(
@@ -48,7 +63,6 @@ class ItemRepository {
             LIMIT $1`,
             [limit]
         );
-
         return result.rows;
     }
 
@@ -69,7 +83,6 @@ class ItemRepository {
             LIMIT $2`,
             [`%${query}%`, limit]
         );
-
         return result.rows;
     }
 
@@ -86,7 +99,6 @@ class ItemRepository {
             ORDER BY created_at DESC`,
             [userId]
         );
-
         return result.rows;
     }
 
@@ -105,44 +117,49 @@ class ItemRepository {
             WHERE i.id = $1`,
             [itemId]
         );
-
         return result.rows[0];
     }
 
-    async getItems({status = null, categoryId = null, locationId = null, city = null, limit = 20, offset = 0} = {}) {
+    async getItems({ status = null, categoryId = null, locationId = null, city = null, limit = 20, offset = 0 } = {}) {
         const conditions = ['i.is_active = TRUE'];
         const values = [];
         let paramIndex = 1;
 
-        if (status){
+        if (status) {
             conditions.push(`i.status = $${paramIndex++}`);
             values.push(status);
         }
-        if (categoryId){
+        if (categoryId) {
             conditions.push(`i.category_id = $${paramIndex++}`);
             values.push(categoryId);
         }
-        if(locationId){
+        if (locationId) {
             conditions.push(`i.location_id = $${paramIndex++}`);
             values.push(locationId);
         }
-        if(city){
+        if (city) {
             conditions.push(`l.city ILIKE $${paramIndex++}`);
             values.push(`%${city}%`);
         }
+
         values.push(limit, offset);
 
-        const query = `SELECT
-            i.id, i.user_id, i.title, i.description, i.image_url, i.status, i.is_active, i.created_at, i.updated_at, c.name AS category_name, l.city AS location_city
-            
-            From items i
-            LEFT JOIN categories x ON c.id = i.cegrory_id
+        // ✅ Fix 4: alias changed from 'x' to 'c', fixed typo 'cegrory_id' → 'category_id'
+        // ✅ Fix 5: pool.query → db.query
+        const query = `
+            SELECT
+                i.id, i.userid, i.title, i.description, i.image_url, i.status,
+                i.is_active, i.created_at, i.updated_at,
+                c.name AS category_name, l.city AS location_city
+            FROM items i
+            LEFT JOIN categories c ON c.id = i.category_id
             LEFT JOIN locations l ON i.location_id = l.id
             WHERE ${conditions.join(' AND ')}
             ORDER BY i.created_at DESC
-            LIMIT $${paramIndex++} OFFSET $${paramIndex++}`;
-            const {rows} = await pool.query(query, values);
-            return rows;
+            LIMIT $${paramIndex++} OFFSET $${paramIndex}`;
+
+        const { rows } = await db.query(query, values);
+        return rows;
     }
 }
 

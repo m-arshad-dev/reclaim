@@ -2,7 +2,27 @@ const itemRepository = require('../repositories/itemRepository');
 const VALID_STATUSES = ['lost', 'found'];
 
 class ItemService {
-    async createItem({ userId, title, description, status, category_id, location_id, imageUrl }) {
+  async createItem({ userId, title, description, status, category_id, location_id, image_url }) {
+    
+    console.log("🟡 SERVICE INPUT:");
+    console.log({
+      userId,
+      title,
+      description,
+      status,
+      category_id,
+      location_id,
+      image_url
+    });
+
+    if (!userId) {
+      console.log("❌ ERROR: userId is missing in service");
+      throw {
+        status: 401,
+        message: "userId is required"
+      };
+    }
+
     return await itemRepository.create({
       userId,
       title,
@@ -10,7 +30,7 @@ class ItemService {
       status,
       category_id,
       location_id,
-      imageUrl,
+      image_url,
     });
   }
  async getAllCategories() {
